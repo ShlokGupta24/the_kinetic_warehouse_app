@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Kinetic Warehouse - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#00422b",
+                    "tertiary-fixed": "#ffdad7",
+                    "secondary-fixed": "#d8e2ff",
+                    "tertiary-container": "#fc7c78",
+                    "surface-container-high": "#dce9ff",
+                    "on-background": "#0b1c30",
+                    "surface-bright": "#f8f9ff",
+                    "primary": "#006c49",
+                    "surface-tint": "#006c49",
+                    "on-primary-fixed": "#002113",
+                    "tertiary": "#a43a3a",
+                    "surface-variant": "#d3e4fe",
+                    "on-tertiary-fixed-variant": "#842225",
+                    "on-tertiary-fixed": "#410005",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary-container": "#711419",
+                    "primary-container": "#10b981",
+                    "surface-container-highest": "#d3e4fe",
+                    "background": "#f8f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9ff",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#213145",
+                    "primary-fixed": "#6ffbbe",
+                    "secondary-container": "#2170e4",
+                    "error": "#ba1a1a",
+                    "outline": "#6c7a71",
+                    "on-secondary-fixed": "#001a42",
+                    "tertiary-fixed-dim": "#ffb3af",
+                    "on-surface-variant": "#3c4a42",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-primary-fixed-variant": "#005236",
+                    "on-secondary-fixed-variant": "#004395",
+                    "surface-dim": "#cbdbf5",
+                    "primary-fixed-dim": "#4edea3",
+                    "surface-container-low": "#eff4ff",
+                    "outline-variant": "#bbcabf",
+                    "on-secondary-container": "#fefcff",
+                    "secondary": "#0058be",
+                    "inverse-primary": "#4edea3",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#0b1c30",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eaf1ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="bg-white/70 backdrop-blur-xl fixed top-0 w-full z-50 shadow-sm shadow-emerald-900/5">
+<div class="flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-emerald-600" data-icon="storefront">storefront</span>
+<span class="text-lg font-black tracking-tighter text-emerald-600 uppercase">The Kinetic Warehouse</span>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center bg-surface-container-low px-3 py-1.5 rounded-full text-slate-500">
+<span class="material-symbols-outlined text-[18px] mr-1" data-icon="cloud_off">cloud_off</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Offline</span>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6">
+<!-- Store Selector & Editorial Header -->
+<div class="mb-8">
+<div class="flex items-center gap-1 text-secondary font-semibold text-sm mb-1">
+<span>Main Distribution Hub</span>
+<span class="material-symbols-outlined text-[16px]" data-icon="expand_more">expand_more</span>
+</div>
+<h1 class="text-display-sm text-[36px] font-black tracking-tight leading-none text-on-surface">Warehouse Overview</h1>
+</div>
+<!-- Bento Grid Stats -->
+<div class="grid grid-cols-2 gap-4 mb-8">
+<div class="col-span-1 bg-surface-container-lowest p-5 rounded-[24px] flex flex-col justify-between aspect-square relative overflow-hidden">
+<div class="text-slate-400 font-medium text-[12px] uppercase tracking-wider">Total Products</div>
+<div class="text-primary text-[32px] font-bold">1,240</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[80px]" data-icon="inventory_2">inventory_2</span>
+</div>
+</div>
+<div class="col-span-1 bg-tertiary-container/10 p-5 rounded-[24px] flex flex-col justify-between aspect-square">
+<div class="text-tertiary font-medium text-[12px] uppercase tracking-wider">Low Stock</div>
+<div class="text-tertiary text-[32px] font-bold">12</div>
+<div class="flex items-center text-tertiary/70 text-[10px] font-bold uppercase">
+                    Action Required
+                </div>
+</div>
+<div class="col-span-2 bg-primary p-6 rounded-[24px] text-white relative overflow-hidden">
+<div class="flex justify-between items-start mb-4">
+<div>
+<div class="text-white/60 font-medium text-[12px] uppercase tracking-wider">Total Value</div>
+<div class="text-[36px] font-black tracking-tighter">$120,000</div>
+</div>
+<div class="bg-white/20 p-2 rounded-xl">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+</div>
+</div>
+<div class="flex gap-4">
+<div>
+<div class="text-white/60 text-[10px] uppercase font-bold tracking-widest">Today's Sales</div>
+<div class="text-[18px] font-bold">$450.00</div>
+</div>
+<div class="ml-auto flex items-end">
+<div class="bg-emerald-400/30 px-2 py-1 rounded text-[10px] font-bold uppercase">+12% vs LY</div>
+</div>
+</div>
+<!-- Abstract decorative shape -->
+<div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
+</div>
+</div>
+<!-- Critical Alert Section -->
+<div class="mb-8 bg-on-tertiary-fixed-variant p-5 rounded-[24px] border-l-4 border-tertiary flex items-center gap-4">
+<div class="bg-tertiary/20 p-3 rounded-full">
+<span class="material-symbols-outlined text-tertiary" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div>
+<h3 class="text-white font-bold text-sm">Critical Inventory Alert</h3>
+<p class="text-white/70 text-xs">12 items have fallen below safety threshold.</p>
+</div>
+<span class="material-symbols-outlined text-white/50 ml-auto" data-icon="chevron_right">chevron_right</span>
+</div>
+<!-- Quick Actions -->
+<div class="mb-10">
+<h2 class="text-label-md font-bold text-slate-400 uppercase tracking-[0.2em] mb-4 pl-1">Quick Actions</h2>
+<div class="grid grid-cols-2 gap-4">
+<button class="bg-primary text-white h-[56px] rounded-[16px] flex items-center justify-center gap-2 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-[20px]" data-icon="add_box">add_box</span>
+<span class="font-bold text-sm">Add Product</span>
+</button>
+<button class="bg-secondary text-white h-[56px] rounded-[16px] flex items-center justify-center gap-2 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined text-[20px]" data-icon="sell">sell</span>
+<span class="font-bold text-sm">Record Sale</span>
+</button>
+</div>
+</div>
+<!-- Recent Activity Editorial List -->
+<div class="mb-4">
+<div class="flex justify-between items-end mb-6">
+<h2 class="text-label-md font-bold text-slate-400 uppercase tracking-[0.2em] pl-1">Recent Activity</h2>
+<span class="text-primary text-xs font-bold uppercase tracking-wider">View All</span>
+</div>
+<div class="space-y-3">
+<!-- Activity Item -->
+<div class="bg-surface-container-low p-4 rounded-[20px] flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-lowest rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Product" class="w-full h-full object-cover" data-alt="Minimalist white wristwatch on a clean aesthetic background with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB0nEqPkN3DjDasG7l1p_cJuu9_h6cV-Doz8X30scp22aELyxdGF45DmcVJsBZr6_YXl4nzZS3G8F64KxZAuK7O1-d6mLOKZpmxy0MXDh5Q0-UFY7liU4o4hsQ6b_34qNhlrZzmGrFNeU3wrcwrnNaU7v2d3q020C0KDN7Vz2Eo1fnh-f3J4HW0sq4PiIHboFL0fOMfzYTaTC0T2DNQtLi65A8J6GNWPHqRStCNHqN2xjBMWmP5rmKeWdNVW56TTewbs3FsMmvgwGpu"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-sm">Sold 10x Nordic Watch</h4>
+<span class="text-[10px] text-slate-400 font-medium">2m ago</span>
+</div>
+<p class="text-slate-500 text-xs">SKU: NW-001 • Sale #8942</p>
+</div>
+<div class="text-primary font-bold text-sm">+$450</div>
+</div>
+<!-- Activity Item -->
+<div class="bg-surface-container-low p-4 rounded-[20px] flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-lowest rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Product" class="w-full h-full object-cover" data-alt="Professional black studio headphones on a textured grey surface high angle shot" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwg3tMT6m5DDilV6hQbZIrxQNjLIgfJzl_4enzomdGcsxCqxFIcnR20E85Z7taNPaypFXl4Vh3oiAtSzp2CAuLhUmUeI_90EiIv1OQ-oIpZUdkQLeb68uyhBwdrZpFoNXPrCfu6wT4B83-VMpOYOdnuhCg3qqxSf6gQwjr2V8AZ1LMxSmQN76e0YKawpOCgKIbbcqcxzMASQp3TL7uIcEyg8gduKIWVkp_-YIgAWV2-kYqFi6tTuCm1Zefjggl7Eq8NBfrZbNUSGd6"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-sm">Restocked 50x Audio Pro</h4>
+<span class="text-[10px] text-slate-400 font-medium">45m ago</span>
+</div>
+<p class="text-slate-500 text-xs">Received by Sarah Miller</p>
+</div>
+<div class="text-secondary font-bold text-sm">+50</div>
+</div>
+<!-- Activity Item -->
+<div class="bg-surface-container-low p-4 rounded-[20px] flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-lowest rounded-xl overflow-hidden flex-shrink-0">
+<img alt="Product" class="w-full h-full object-cover" data-alt="Bright red running shoe isolated on a light gray background with dynamic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHbWr8CLPCkLn5bSmvURRH3PxRlS52z8j_stfRenqQdYLqh_hdyASrEskwNqRrxeN9fhYaOJgjmvDKl-ICDbUD-bOwOG0JL_H6TQ_xsHQzyyVIUhyJCV2HHktJt78vhmB6IjumchUthmltWE2Z-XwLWQtF3Jwx2R_r8TWHCV0BuHZqIUgUVmFbkabXa1dszjHPh0CKw3OuIufAmDDBdPAkrhGeEX4whMXp31iUf_cHgi5dZ6ke3-WYU9DPo4YkP3jLxv7LZbGvc1NG"/>
+</div>
+<div class="flex-grow">
+<div class="flex justify-between items-start">
+<h4 class="font-bold text-on-surface text-sm">Sold 2x Kinetic Runner</h4>
+<span class="text-[10px] text-slate-400 font-medium">1h ago</span>
+</div>
+<p class="text-slate-500 text-xs">SKU: KR-RED-04</p>
+</div>
+<div class="text-primary font-bold text-sm">+$180</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full bg-white flex justify-around items-center px-4 pt-3 pb-8 rounded-t-[32px] z-50 shadow-[0_-8px_24px_rgba(11,28,48,0.04)]">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center bg-emerald-50 text-emerald-700 rounded-2xl px-5 py-2.5 transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Dashboard</span>
+</a>
+<!-- Products -->
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 transition-all hover:text-emerald-500 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Products</span>
+</a>
+<!-- Ledger -->
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 transition-all hover:text-emerald-500 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Ledger</span>
+</a>
+<!-- Stats -->
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 transition-all hover:text-emerald-500 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Stats</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 transition-all hover:text-emerald-500 active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-primary-container": "#00422b",
+                    "tertiary-fixed": "#ffdad7",
+                    "secondary-fixed": "#d8e2ff",
+                    "tertiary-container": "#fc7c78",
+                    "surface-container-high": "#dce9ff",
+                    "on-background": "#0b1c30",
+                    "surface-bright": "#f8f9ff",
+                    "primary": "#006c49",
+                    "surface-tint": "#006c49",
+                    "on-primary-fixed": "#002113",
+                    "tertiary": "#a43a3a",
+                    "surface-variant": "#d3e4fe",
+                    "on-tertiary-fixed-variant": "#842225",
+                    "on-tertiary-fixed": "#410005",
+                    "surface-container": "#e5eeff",
+                    "on-tertiary-container": "#711419",
+                    "primary-container": "#10b981",
+                    "surface-container-highest": "#d3e4fe",
+                    "background": "#f8f9ff",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9ff",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-surface": "#213145",
+                    "primary-fixed": "#6ffbbe",
+                    "secondary-container": "#2170e4",
+                    "error": "#ba1a1a",
+                    "outline": "#6c7a71",
+                    "on-secondary-fixed": "#001a42",
+                    "tertiary-fixed-dim": "#ffb3af",
+                    "on-surface-variant": "#3c4a42",
+                    "secondary-fixed-dim": "#adc6ff",
+                    "on-primary-fixed-variant": "#005236",
+                    "on-secondary-fixed-variant": "#004395",
+                    "surface-dim": "#cbdbf5",
+                    "primary-fixed-dim": "#4edea3",
+                    "surface-container-low": "#eff4ff",
+                    "outline-variant": "#bbcabf",
+                    "on-secondary-container": "#fefcff",
+                    "secondary": "#0058be",
+                    "inverse-primary": "#4edea3",
+                    "on-error": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "on-surface": "#0b1c30",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "inverse-on-surface": "#eaf1ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/70 backdrop-blur-xl shadow-sm shadow-emerald-900/5 flex justify-between items-center px-6 py-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-emerald-500" data-icon="storefront">storefront</span>
+<h1 class="text-lg font-black tracking-tighter text-emerald-600 uppercase">The Kinetic Warehouse</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="hover:bg-slate-100 transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined text-slate-400" data-icon="cloud_off">cloud_off</span>
+</button>
+</div>
+</header>
+<main class="pt-24 px-6">
+<!-- Search & Barcode -->
+<div class="relative mb-8">
+<div class="flex gap-3">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full bg-surface-container-high border-none rounded-xl py-4 pl-12 pr-4 focus:ring-2 focus:ring-primary focus:bg-surface-container-lowest text-on-surface placeholder:text-outline/60" placeholder="Search products..." type="text"/>
+</div>
+<button class="bg-primary text-on-primary w-14 h-14 rounded-xl flex items-center justify-center active:scale-95 duration-200 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined" data-icon="barcode_scanner">barcode_scanner</span>
+</button>
+</div>
+</div>
+<!-- Filter Chips Section -->
+<section class="space-y-6 mb-8">
+<div>
+<h2 class="text-xs font-bold uppercase tracking-widest text-outline mb-3">Categories</h2>
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="bg-primary-fixed text-on-primary-fixed-variant px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap">All Items</button>
+<button class="bg-surface-container-low text-on-surface-variant px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap hover:bg-surface-container-high transition-colors">Electronics</button>
+<button class="bg-surface-container-low text-on-surface-variant px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap hover:bg-surface-container-high transition-colors">Clothing</button>
+<button class="bg-surface-container-low text-on-surface-variant px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap hover:bg-surface-container-high transition-colors">Furniture</button>
+</div>
+</div>
+<div>
+<h2 class="text-xs font-bold uppercase tracking-widest text-outline mb-3">Stock Status</h2>
+<div class="flex gap-2">
+<button class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-1.5 rounded-full text-sm font-medium">All</button>
+<button class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+                        Low
+                    </button>
+<button class="bg-surface-container-lowest border border-outline-variant/30 text-on-surface px-4 py-1.5 rounded-full text-sm font-medium flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+                        In Stock
+                    </button>
+</div>
+</div>
+</section>
+<!-- Product List -->
+<div class="space-y-3">
+<!-- Product Card 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 group active:scale-[0.98] transition-all duration-200">
+<div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="professional studio shot of high-end wireless headphones on a clean minimalist background with soft shadows" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBf_4sE3HWSOiHHZj7dHWe64xo-TxiKnSBRzw3i5JGP7WV68xkJN2TmKqlGSqjB6ESfoiEZLfsVIu4hlf9j9Z0Xv49OXDkm6562TrT0k8NZwR5WdboAqK2ZgUh5C0mgocg3_x6XldwKxDQcvVTRLf6es_-gcmmk-Q9ogLmaBKO8zsMD9HxO_oXYTRAXwAbMKe435B6ONzCTrwx2zBVenDhfJ7RFLBO4kkH4A-z9x4bDlwUyykrxtOKg3Ek0qzhTm4pJcvswO4x1gEX-"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-[10px] font-bold uppercase tracking-widest text-secondary">Electronics</p>
+<span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">In Stock</span>
+</div>
+<h3 class="text-on-surface font-bold text-base truncate">Sonic-X Wireless Headphones</h3>
+<div class="flex items-end justify-between mt-2">
+<p class="text-sm text-outline font-medium">SKU: WH-4050</p>
+<p class="text-primary font-black text-xl">45 <span class="text-[10px] uppercase tracking-normal font-bold opacity-70">units</span></p>
+</div>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 active:scale-[0.98] transition-all duration-200">
+<div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="luxury minimalist wristwatch with white face and silver band on a clean high-end product display surface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBCtWIzZC3eYPLUaoZ2iagpXBWUI0pJDVN76aA69qCqLIEq2ScdoRShuwf_es5z2CRi_UfPT4BncmZ-IiE_TcQP2Y18XZDRysAj1c5CxTkpoHNq3P2Q3DXbGCZTRqsRPqSY36TdT0GZwCi3iHfT_MUoNiJirkJaUnYQB8HwFk0jZwze3KiUq7chbcRLBYTJnDWnBBlwDArxzAx2cg2SaQH8_mETywXccU5xK_Fd_NHSto11ANhYmHoDpt267flScDh9U5fCWyJ_sFI3"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-[10px] font-bold uppercase tracking-widest text-secondary">Electronics</p>
+<span class="bg-red-50 text-tertiary text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">Low Stock</span>
+</div>
+<h3 class="text-on-surface font-bold text-base truncate">Nordic Minimalist Watch</h3>
+<div class="flex items-end justify-between mt-2">
+<p class="text-sm text-outline font-medium">SKU: NM-0021</p>
+<p class="text-tertiary font-black text-xl">03 <span class="text-[10px] uppercase tracking-normal font-bold opacity-70">units</span></p>
+</div>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 active:scale-[0.98] transition-all duration-200">
+<div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="vibrant red athletic running shoe isolated on a sleek light grey professional product photography background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM1mSrLbIgAIFGxcIgOdCGKLJMUkPddK0X0mzw4q0Ln9vEHPV6wMgQ20L6obEegznCFFwFYv95GrPT-w8n1hs5nZj_0f5a7de0pvLecrXOTG5Pdaq48mWhUZucOYWcve9ATfhJQQQbiK4fgFkMlGEiv8KiW_UyDumHgXjGbVdGFl6-IdX1WeyrL6PGgZ3PU7IIWx7lMf0RiDGWoa3eJIFcMIuFMRYt57ARvGxuf1RsUDPzvjzqKYLfJiefZyIjSDtG2akWGalcjXAP"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-[10px] font-bold uppercase tracking-widest text-secondary">Clothing</p>
+<span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">In Stock</span>
+</div>
+<h3 class="text-on-surface font-bold text-base truncate">AeroSprint Running Shoes</h3>
+<div class="flex items-end justify-between mt-2">
+<p class="text-sm text-outline font-medium">SKU: AS-9920</p>
+<p class="text-primary font-black text-xl">128 <span class="text-[10px] uppercase tracking-normal font-bold opacity-70">units</span></p>
+</div>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl flex items-center gap-4 active:scale-[0.98] transition-all duration-200">
+<div class="w-20 h-20 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="modern emerald green velvet sofa with gold legs in a brightly lit contemporary living room setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgvb2a7o36skxnsmk4M8mqccyqZdmtnzfFgaBGFmDMQ1Kux3ngGMT32he4HuXI-Mm6HFsj_EPmcYm3osrcQT_00bB6Z5B7l9pqPSXWZs2nsFo-tmwwBvx8-JVibdfvVj0U1bnqzZ6nWSw7RG8nBFxhkqZVvdcwGMhIBieFHdbFiGFUrrOF4KXf6qZtN1G-xxAVpAWnFKlI3oYiflc_IpEjzesGyXUbBzDpNB8hB7zoV8TGO-Xv4aC6BAP5qLYdHWuntgZt_r9T-OyI"/>
+</div>
+<div class="flex-grow min-w-0">
+<div class="flex justify-between items-start mb-1">
+<p class="text-[10px] font-bold uppercase tracking-widest text-secondary">Furniture</p>
+<span class="bg-emerald-50 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter">In Stock</span>
+</div>
+<h3 class="text-on-surface font-bold text-base truncate">Velvet Lounge Chair</h3>
+<div class="flex items-end justify-between mt-2">
+<p class="text-sm text-outline font-medium">SKU: LC-1102</p>
+<p class="text-primary font-black text-xl">12 <span class="text-[10px] uppercase tracking-normal font-bold opacity-70">units</span></p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB -->
+<button class="fixed bottom-28 right-6 w-16 h-16 bg-gradient-to-br from-primary to-primary-container text-on-primary rounded-2xl shadow-xl shadow-primary/30 flex items-center justify-center active:scale-90 transition-transform duration-150 z-40">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pt-3 pb-8 bg-white dark:bg-slate-950 rounded-t-[32px] z-50 shadow-[0_-8px_24px_rgba(11,28,48,0.04)]">
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 hover:text-emerald-500 transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-emerald-50 text-emerald-700 rounded-2xl px-5 py-2.5 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Products</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 hover:text-emerald-500 transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Ledger</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 hover:text-emerald-500 transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Stats</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 px-5 py-2.5 hover:text-emerald-500 transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-['Inter'] font-medium text-[11px] uppercase tracking-widest mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

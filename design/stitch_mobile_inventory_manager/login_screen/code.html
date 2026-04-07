@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login | The Kinetic Warehouse</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-container": "#00422b",
+                        "tertiary-fixed": "#ffdad7",
+                        "secondary-fixed": "#d8e2ff",
+                        "tertiary-container": "#fc7c78",
+                        "surface-container-high": "#dce9ff",
+                        "on-background": "#0b1c30",
+                        "surface-bright": "#f8f9ff",
+                        "primary": "#006c49",
+                        "surface-tint": "#006c49",
+                        "on-primary-fixed": "#002113",
+                        "tertiary": "#a43a3a",
+                        "surface-variant": "#d3e4fe",
+                        "on-tertiary-fixed-variant": "#842225",
+                        "on-tertiary-fixed": "#410005",
+                        "surface-container": "#e5eeff",
+                        "on-tertiary-container": "#711419",
+                        "primary-container": "#10b981",
+                        "surface-container-highest": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-surface": "#213145",
+                        "primary-fixed": "#6ffbbe",
+                        "secondary-container": "#2170e4",
+                        "error": "#ba1a1a",
+                        "outline": "#6c7a71",
+                        "on-secondary-fixed": "#001a42",
+                        "tertiary-fixed-dim": "#ffb3af",
+                        "on-surface-variant": "#3c4a42",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface-dim": "#cbdbf5",
+                        "primary-fixed-dim": "#4edea3",
+                        "surface-container-low": "#eff4ff",
+                        "outline-variant": "#bbcabf",
+                        "on-secondary-container": "#fefcff",
+                        "secondary": "#0058be",
+                        "inverse-primary": "#4edea3",
+                        "on-error": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "on-surface": "#0b1c30",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-on-surface": "#eaf1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased min-h-screen flex flex-col">
+<!-- Top Navigation Suppression (Transactional Page) -->
+<!-- The TopAppBar is omitted here as per the "Destination Rule" for login screens -->
+<main class="flex-grow flex flex-col items-center justify-center px-6 py-12 relative overflow-hidden">
+<!-- Background Ambient Element -->
+<div class="absolute -top-24 -right-24 w-64 h-64 bg-primary-container/10 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-24 -left-24 w-64 h-64 bg-secondary-container/5 rounded-full blur-3xl"></div>
+<div class="w-full max-w-sm z-10">
+<!-- Brand Identity -->
+<div class="mb-12 text-left">
+<div class="flex items-center gap-2 mb-6">
+<div class="bg-primary-container p-2.5 rounded-xl shadow-lg shadow-primary-container/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<span class="text-xl font-black tracking-tighter text-primary uppercase">The Kinetic Warehouse</span>
+</div>
+<h1 class="text-[2.25rem] font-bold tracking-tight text-on-surface leading-tight mb-2">
+                    Welcome Back.
+                </h1>
+<p class="text-on-surface-variant text-base">
+                    Log in to curate your inventory workspace.
+                </p>
+</div>
+<!-- Login Form -->
+<form class="space-y-4" onsubmit="return false;">
+<!-- Email Input -->
+<div class="space-y-1.5">
+<label class="block text-[0.75rem] font-semibold text-on-surface-variant tracking-wider uppercase ml-1">Email Address</label>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">alternate_email</span>
+</div>
+<input class="w-full h-14 pl-12 pr-4 bg-surface-container-high border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200 outline-none" placeholder="manager@warehouse.com" type="email"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-1.5">
+<div class="flex justify-between items-center px-1">
+<label class="block text-[0.75rem] font-semibold text-on-surface-variant tracking-wider uppercase">Password</label>
+<a class="text-[0.75rem] font-bold text-secondary hover:text-primary transition-colors tracking-tight" href="#">FORGOT?</a>
+</div>
+<div class="relative group">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none text-on-surface-variant group-focus-within:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">lock</span>
+</div>
+<input class="w-full h-14 pl-12 pr-12 bg-surface-container-high border-none rounded-xl text-on-surface placeholder:text-outline/50 focus:ring-2 focus:ring-primary/20 focus:bg-surface-container-lowest transition-all duration-200 outline-none" placeholder="••••••••" type="password"/>
+<button class="absolute inset-y-0 right-4 flex items-center text-on-surface-variant hover:text-primary" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<!-- Primary Action -->
+<div class="pt-4">
+<button class="w-full h-14 bg-primary text-on-primary font-bold rounded-xl shadow-xl shadow-primary/20 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2">
+                        Sign In
+                        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+</div>
+<!-- Separator -->
+<div class="relative py-6">
+<div aria-hidden="true" class="absolute inset-0 flex items-center">
+<div class="w-full border-t border-outline/10"></div>
+</div>
+<div class="relative flex justify-center text-[0.65rem] uppercase tracking-widest font-bold">
+<span class="bg-surface px-4 text-on-surface-variant">Or continue with</span>
+</div>
+</div>
+<!-- Secondary Action -->
+<button class="w-full h-14 bg-surface-container-lowest border-2 border-surface-container-high text-on-surface font-semibold rounded-xl active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-3">
+<svg class="w-5 h-5" viewbox="0 0 24 24">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 12-4.53z" fill="#EA4335"></path>
+</svg>
+                    Google
+                </button>
+</form>
+<!-- Footer -->
+<div class="mt-12 text-center">
+<p class="text-on-surface-variant text-sm font-medium">
+                    New to the Warehouse? 
+                    <a class="text-primary font-bold hover:underline ml-1" href="#">Create Account</a>
+</p>
+</div>
+</div>
+</main>
+<!-- Support Banner (Editorial Element) -->
+<footer class="mt-auto px-6 pb-12 w-full max-w-sm mx-auto">
+<div class="p-6 bg-surface-container-low rounded-3xl flex items-center gap-4">
+<div class="bg-surface-container-lowest p-3 rounded-2xl">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+</div>
+<div>
+<p class="text-[0.75rem] font-bold text-on-surface uppercase tracking-wider">Need assistance?</p>
+<p class="text-[0.75rem] text-on-surface-variant">Our curation team is here to help 24/7.</p>
+</div>
+</div>
+</footer>
+<!-- Bottom Navigation Suppression (Transactional Page) -->
+<!-- The BottomNavBar is omitted here as per the "Relevance Check" for transactional screens -->
+</body></html>
