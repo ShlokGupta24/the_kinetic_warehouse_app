@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "742311130609",
+    "project_id": "the-kinetic-warehouse-app",
+    "storage_bucket": "the-kinetic-warehouse-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742311130609:android:680f0bb09bef84a4d98050",
+        "android_client_info": {
+          "package_name": "com.example.the_kinetic_warehouse_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3IEBH0n0Y_DD9DuTLR9R3_cKkyqISPkA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
