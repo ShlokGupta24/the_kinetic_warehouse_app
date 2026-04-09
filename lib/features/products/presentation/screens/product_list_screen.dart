@@ -2,19 +2,37 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/shared_bottom_nav_bar.dart';
 import '../providers/product_filter_provider.dart';
 import '../widgets/product_card.dart';
+import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
-class ProductListScreen extends ConsumerWidget {
+class ProductListScreen extends ConsumerStatefulWidget {
   const ProductListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProductListScreen> createState() => _ProductListScreenState();
+}
+
+class _ProductListScreenState extends ConsumerState<ProductListScreen> {
+  late TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final productsAsync = ref.watch(filteredProductsProvider);
     final currentCategory = ref.watch(categoryFilterProvider) ?? 'All Items';
     final currentStatus = ref.watch(stockStatusFilterProvider) ?? 'All';
@@ -78,6 +96,7 @@ class ProductListScreen extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                       child: TextField(
+                        controller: _searchController,
                         onChanged: (val) => ref.read(searchQueryProvider.notifier).state = val,
                         decoration: InputDecoration(
                           hintText: 'Search products...',
@@ -109,7 +128,18 @@ class ProductListScreen extends ConsumerWidget {
                     ),
                     child: IconButton(
                       icon: Icon(Icons.qr_code_scanner, color: Colors.white, size: 24.sp),
-                      onPressed: () {},
+                      onPressed: () async {
+                        var res = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const SimpleBarcodeScannerPage(),
+                          ),
+                        );
+                        if (res is String && res != '-1') {
+                          _searchController.text = res;
+                          ref.read(searchQueryProvider.notifier).state = res;
+                        }
+                      },
                     ),
                   ),
                 ],
@@ -201,15 +231,6 @@ class ProductListScreen extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 90.h), // Above nav bar
-        child: FloatingActionButton(
-          onPressed: () => context.push('/add-product'),
-          backgroundColor: AppColors.primary,
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
-      ),
-      bottomNavigationBar: const SharedBottomNavBar(selectedIndex: 1),
     );
   }
 

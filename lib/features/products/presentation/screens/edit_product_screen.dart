@@ -8,24 +8,26 @@ import '../../../../core/theme/app_colors.dart';
 import '../../data/product_repository.dart';
 import 'package:simple_barcode_scanner/simple_barcode_scanner.dart';
 
-class AddProductScreen extends ConsumerStatefulWidget {
-  const AddProductScreen({super.key});
+class EditProductScreen extends ConsumerStatefulWidget {
+  final Map<String, dynamic> product;
+
+  const EditProductScreen({super.key, required this.product});
 
   @override
-  ConsumerState<AddProductScreen> createState() => _AddProductScreenState();
+  ConsumerState<EditProductScreen> createState() => _EditProductScreenState();
 }
 
-class _AddProductScreenState extends ConsumerState<AddProductScreen> {
+class _EditProductScreenState extends ConsumerState<EditProductScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
-  final _skuController = TextEditingController();
-  final _qtyController = TextEditingController(text: '0');
-  final _costController = TextEditingController();
-  final _priceController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _skuController;
+  late TextEditingController _costController;
+  late TextEditingController _priceController;
+  late TextEditingController _qtyController;
 
-  String _selectedCategory = 'Select Category';
-  String _selectedUnit = 'Piece (pc)';
+  late String _selectedCategory;
+  late String _selectedUnit;
   bool _isLoading = false;
 
   final List<String> _categories = [
@@ -45,25 +47,33 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.product['name']);
+    _skuController = TextEditingController(text: widget.product['sku']);
+    _costController = TextEditingController(text: widget.product['costPrice']?.toString() ?? '0');
+    _priceController = TextEditingController(text: widget.product['price']?.toString() ?? '0');
+    _qtyController = TextEditingController(text: widget.product['qty']?.toString() ?? '0');
+
+    _selectedCategory = widget.product['category'] ?? 'Select Category';
+    if (!_categories.contains(_selectedCategory)) {
+      _selectedCategory = 'Select Category';
+    }
+
+    _selectedUnit = widget.product['unit'] ?? 'Piece (pc)';
+    if (!_units.contains(_selectedUnit)) {
+      _selectedUnit = 'Piece (pc)';
+    }
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     _skuController.dispose();
-    _qtyController.dispose();
     _costController.dispose();
     _priceController.dispose();
+    _qtyController.dispose();
     super.dispose();
-  }
-
-  void _incrementQty() {
-    int current = int.tryParse(_qtyController.text) ?? 0;
-    _qtyController.text = (current + 1).toString();
-  }
-
-  void _decrementQty() {
-    int current = int.tryParse(_qtyController.text) ?? 0;
-    if (current > 0) {
-      _qtyController.text = (current - 1).toString();
-    }
   }
 
   Future<void> _saveProduct() async {
@@ -79,26 +89,38 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
     setState(() => _isLoading = true);
 
     try {
-      await ref.read(productRepositoryProvider).addProduct(
-            name: _nameController.text.trim(),
-            category: _selectedCategory,
-            sku: _skuController.text.trim(),
-            initialQty: int.tryParse(_qtyController.text) ?? 0,
-            unit: _selectedUnit,
-            costPrice: double.tryParse(_costController.text) ?? 0,
-            sellingPrice: double.tryParse(_priceController.text) ?? 0,
-          );
+      final docId = widget.product['id'] as String;
+      final int oldQty = widget.product['qty'] ?? 0;
+      final int newQty = int.tryParse(_qtyController.text) ?? 0;
+
+      await ref.read(productRepositoryProvider).editProduct(
+        productId: docId,
+        oldQty: oldQty,
+        newQty: newQty,
+        sku: _skuController.text.trim(),
+        name: _nameController.text.trim(),
+        imageUrl: widget.product['imageUrl'] as String?,
+        data: {
+          'name': _nameController.text.trim(),
+          'category': _selectedCategory,
+          'sku': _skuController.text.trim(),
+          'qty': newQty,
+          'unit': _selectedUnit,
+          'costPrice': double.tryParse(_costController.text) ?? 0,
+          'price': double.tryParse(_priceController.text) ?? 0,
+        },
+      );
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Product added successfully')),
+          const SnackBar(content: Text('Product updated successfully')),
         );
         context.pop();
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add product: $e')),
+          SnackBar(content: Text('Failed to update product: $e')),
         );
       }
     } finally {
@@ -138,7 +160,7 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                         ),
                         SizedBox(width: 8.w),
                         Text(
-                          'Add Product',
+                          'Edit Product',
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.bold,
@@ -147,10 +169,6 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                           ),
                         ),
                       ],
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.more_vert, color: Colors.grey.shade600, size: 24.sp),
-                      onPressed: () {},
                     ),
                   ],
                 ),
@@ -200,24 +218,39 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Container(
-                padding: EdgeInsets.all(16.r),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryContainer.withOpacity(0.2),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.add_a_photo, color: AppColors.primary, size: 32.sp),
-              ),
-              SizedBox(height: 16.h),
-              Text(
-                'Add Product Image',
-                style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.onSurfaceVariant, fontSize: 13.sp),
-              ),
-              SizedBox(height: 4.h),
-              Text(
-                'Recommended: 1200 x 675 px',
-                style: TextStyle(color: AppColors.outline, fontSize: 11.sp),
-              ),
+               widget.product['imageUrl'] != null
+                ? Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(8.r),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.r),
+                        child: Image.network(widget.product['imageUrl'] as String, fit: BoxFit.cover, width: double.infinity),
+                      ),
+                    ),
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(16.r),
+                        decoration: BoxDecoration(
+                          color: AppColors.primaryContainer.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.add_a_photo, color: AppColors.primary, size: 32.sp),
+                      ),
+                      SizedBox(height: 16.h),
+                      Text(
+                        'Change Product Image',
+                        style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.onSurfaceVariant, fontSize: 13.sp),
+                      ),
+                      SizedBox(height: 4.h),
+                      Text(
+                        'Recommended: 1200 x 675 px',
+                        style: TextStyle(color: AppColors.outline, fontSize: 11.sp),
+                      ),
+                    ],
+                  ),
             ],
           ),
         ),
@@ -245,11 +278,6 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
           Text(
             'Core Details',
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w900, color: AppColors.onSurface, letterSpacing: -0.5),
-          ),
-          SizedBox(height: 4.h),
-          Text(
-            'Identify and categorize your new item',
-            style: TextStyle(fontSize: 12.sp, color: AppColors.outline),
           ),
           SizedBox(height: 20.h),
           _buildTextField(
@@ -301,26 +329,19 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
             'Stock & Pricing',
             style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w900, color: AppColors.onSurface, letterSpacing: -0.5),
           ),
-          SizedBox(height: 4.h),
-          Text(
-            'Manage quantity and financial margins',
-            style: TextStyle(fontSize: 12.sp, color: AppColors.outline),
-          ),
           SizedBox(height: 20.h),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(child: _buildQtyField()),
-              SizedBox(width: 16.w),
-              Expanded(
-                child: _buildDropdown(
-                  label: 'Unit of Measure',
-                  value: _selectedUnit,
-                  items: _units,
-                  onChanged: (v) => setState(() => _selectedUnit = v!),
-                ),
-              ),
-            ],
+          _buildDropdown(
+            label: 'Unit of Measure',
+            value: _selectedUnit,
+            items: _units,
+            onChanged: (v) => setState(() => _selectedUnit = v!),
+          ),
+          SizedBox(height: 16.h),
+          _buildTextField(
+            label: 'Quantity in Stock',
+            controller: _qtyController,
+            hint: '0',
+            validator: (v) => v == null || v.isEmpty ? 'Required' : null,
           ),
           SizedBox(height: 16.h),
           Row(
@@ -371,17 +392,9 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
                     children: [
                       Icon(Icons.check_circle, size: 20.sp),
                       SizedBox(width: 8.w),
-                      Text('Save Product', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
+                      Text('Update Product', style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold)),
                     ],
                   ),
-          ),
-        ),
-        SizedBox(height: 12.h),
-        TextButton(
-          onPressed: () => context.pop(),
-          child: Text(
-            'Cancel and discard changes',
-            style: TextStyle(color: AppColors.outline, fontSize: 13.sp, fontWeight: FontWeight.w600),
           ),
         ),
       ],
@@ -518,53 +531,6 @@ class _AddProductScreenState extends ConsumerState<AddProductScreen> {
               ),
             ),
           ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildQtyField() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildLabel('Initial Quantity'),
-        Container(
-          padding: EdgeInsets.all(4.r),
-          decoration: BoxDecoration(
-            color: AppColors.surfaceContainerHigh,
-            borderRadius: BorderRadius.circular(12.r),
-          ),
-          child: Row(
-            children: [
-              Container(
-                decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8.r)),
-                child: IconButton(
-                  onPressed: _decrementQty,
-                  icon: Icon(Icons.remove, color: AppColors.primary, size: 20.sp),
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints.tightFor(width: 36.w, height: 36.w),
-                ),
-              ),
-              Expanded(
-                child: TextFormField(
-                  controller: _qtyController,
-                  textAlign: TextAlign.center,
-                  keyboardType: TextInputType.number,
-                  style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold, color: AppColors.onSurface),
-                  decoration: const InputDecoration(border: InputBorder.none, isDense: true, contentPadding: EdgeInsets.zero),
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(color: AppColors.primary, borderRadius: BorderRadius.circular(8.r)),
-                child: IconButton(
-                  onPressed: _incrementQty,
-                  icon: Icon(Icons.add, color: Colors.white, size: 20.sp),
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints.tightFor(width: 36.w, height: 36.w),
-                ),
-              ),
-            ],
-          ),
         ),
       ],
     );

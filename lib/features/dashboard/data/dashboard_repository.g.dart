@@ -100,7 +100,26 @@ final lySalesStreamProvider =
 // ignore: unused_element
 typedef LySalesStreamRef =
     StreamProviderRef<QuerySnapshot<Map<String, dynamic>>>;
-String _$dashboardStatsHash() => r'f3595c8778ef6d5a0b4b7f4dd879988230572b05';
+String _$allSalesStreamHash() => r'cae981d1ecf55379fe93acc776a9cdd82b08b57f';
+
+/// See also [allSalesStream].
+@ProviderFor(allSalesStream)
+final allSalesStreamProvider =
+    StreamProvider<QuerySnapshot<Map<String, dynamic>>>.internal(
+      allSalesStream,
+      name: r'allSalesStreamProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$allSalesStreamHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef AllSalesStreamRef =
+    StreamProviderRef<QuerySnapshot<Map<String, dynamic>>>;
+String _$dashboardStatsHash() => r'968f0a5e0867e1f1b93503c3d2339df72d3a5929';
 
 /// See also [dashboardStats].
 @ProviderFor(dashboardStats)

@@ -6,9 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../products/presentation/providers/product_filter_provider.dart';
 import '../../data/dashboard_repository.dart';
 import '../../domain/dashboard_stats.dart';
-import '../../../../core/widgets/shared_bottom_nav_bar.dart';
 
 final _rupeeFmt = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
 final _rupeeFmtDec = NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 2);
@@ -94,7 +94,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: const SharedBottomNavBar(selectedIndex: 0),
     );
   }
 
@@ -102,20 +101,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              'Main Distribution Hub',
-              style: TextStyle(
-                color: AppColors.secondary,
-                fontWeight: FontWeight.w600,
-                fontSize: 13.sp,
-              ),
-            ),
-            Icon(Icons.expand_more, color: AppColors.secondary, size: 18.sp),
-          ],
-        ),
-        SizedBox(height: 4.h),
+
         Text(
           'Warehouse Overview',
           style: TextStyle(
@@ -131,9 +117,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildBentoGrid(DashboardStats stats) {
-    final changePercent = stats.salesChangePercent;
-    final isPositiveChange = changePercent >= 0;
-
     return Column(
       children: [
         IntrinsicHeight(
@@ -193,16 +176,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: Container(
                   padding: EdgeInsets.all(18.r),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFC7C78).withOpacity(0.1),
+                    color: AppColors.secondaryContainer.withOpacity(0.3),
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'LOW STOCK',
+                        'TOTAL UNITS SOLD',
                         style: TextStyle(
-                          color: const Color(0xFFA43A3A),
+                          color: AppColors.secondary,
                           fontWeight: FontWeight.w600,
                           fontSize: 11.sp,
                           letterSpacing: 1,
@@ -210,20 +193,18 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       ),
                       SizedBox(height: 12.h),
                       Text(
-                        stats.lowStockCount.toString(),
+                        NumberFormat.decimalPattern().format(stats.totalUnitsSold),
                         style: TextStyle(
-                          color: const Color(0xFFA43A3A),
+                          color: AppColors.secondary,
                           fontSize: 30.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        stats.lowStockCount > 0 ? 'ACTION REQUIRED' : 'ALL GOOD',
+                        'ALL-TIME VOLUME',
                         style: TextStyle(
-                          color: stats.lowStockCount > 0
-                              ? const Color(0xFFA43A3A).withOpacity(0.7)
-                              : AppColors.primary.withOpacity(0.7),
+                          color: AppColors.secondary.withOpacity(0.7),
                           fontWeight: FontWeight.bold,
                           fontSize: 9.sp,
                           letterSpacing: 1,
@@ -288,7 +269,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
               SizedBox(height: 14.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -312,22 +292,27 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       ),
                     ],
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-                    decoration: BoxDecoration(
-                      color: (isPositiveChange ? Colors.greenAccent : Colors.redAccent)
-                          .withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(6.r),
-                    ),
-                    child: Text(
-                      '${isPositiveChange ? '+' : ''}${changePercent.toStringAsFixed(1)}% VS LY',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10.sp,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 0.5,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        'PROFIT',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.6),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10.sp,
+                          letterSpacing: 1.5,
+                        ),
                       ),
-                    ),
+                      Text(
+                        _rupeeFmtDec.format(stats.todayProfit),
+                        style: TextStyle(
+                          color: const Color(0xFF69F0AE),
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -339,42 +324,48 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   }
 
   Widget _buildCriticalAlert(DashboardStats stats) {
-    return Container(
-      padding: EdgeInsets.all(18.r),
-      decoration: BoxDecoration(
-        color: const Color(0xFF842225),
-        borderRadius: BorderRadius.circular(20.r),
-        border: const Border(left: BorderSide(color: Color(0xFFA43A3A), width: 4)),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10.r),
-            decoration: BoxDecoration(
-              color: const Color(0xFFA43A3A).withOpacity(0.2),
-              shape: BoxShape.circle,
+    return GestureDetector(
+      onTap: () {
+        ref.read(stockStatusFilterProvider.notifier).state = 'Low Stock';
+        context.go('/products');
+      },
+      child: Container(
+        padding: EdgeInsets.all(18.r),
+        decoration: BoxDecoration(
+          color: const Color(0xFF842225),
+          borderRadius: BorderRadius.circular(20.r),
+          border: const Border(left: BorderSide(color: Color(0xFFA43A3A), width: 4)),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(10.r),
+              decoration: BoxDecoration(
+                color: const Color(0xFFA43A3A).withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(Icons.warning_amber_rounded, color: const Color(0xFFA43A3A), size: 22.sp),
             ),
-            child: Icon(Icons.warning_amber_rounded, color: const Color(0xFFA43A3A), size: 22.sp),
-          ),
-          SizedBox(width: 14.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Critical Inventory Alert',
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14.sp),
-                ),
-                SizedBox(height: 4.h),
-                Text(
-                  '${stats.lowStockCount} item${stats.lowStockCount == 1 ? '' : 's'} below safety threshold.',
-                  style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12.sp),
-                ),
-              ],
+            SizedBox(width: 14.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Critical Inventory Alert',
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14.sp),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    '${stats.lowStockCount} item${stats.lowStockCount == 1 ? '' : 's'} below safety threshold.',
+                    style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12.sp),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.5), size: 22.sp),
-        ],
+            Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.5), size: 22.sp),
+          ],
+        ),
       ),
     );
   }
@@ -427,7 +418,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             SizedBox(width: 14.w),
             Expanded(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.push('/add-transaction'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.secondary,
                   foregroundColor: Colors.white,
@@ -492,13 +483,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   ],
                 ],
               ),
-              Text(
-                'VIEW ALL',
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                  letterSpacing: 1,
+              GestureDetector(
+                onTap: () => context.go('/ledger'),
+                child: Text(
+                  'VIEW ALL',
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.primary,
+                    letterSpacing: 1,
+                  ),
                 ),
               ),
             ],

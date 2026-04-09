@@ -5,30 +5,15 @@ import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../theme/app_colors.dart';
 
 class SharedBottomNavBar extends StatelessWidget {
-  final int selectedIndex;
+  final StatefulNavigationShell navigationShell;
 
-  const SharedBottomNavBar({super.key, required this.selectedIndex});
+  const SharedBottomNavBar({super.key, required this.navigationShell});
 
-  void _onItemTapped(BuildContext context, int index) {
-    if (index == selectedIndex) return;
-
-    switch (index) {
-      case 0:
-        context.go('/home');
-        break;
-      case 1:
-        context.go('/products');
-        break;
-      case 2:
-        context.go('/ledger');
-        break;
-      case 3:
-        context.go('/stats');
-        break;
-      case 4:
-        context.go('/profile');
-        break;
-    }
+  void _onItemTapped(int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
   }
 
   @override
@@ -55,31 +40,26 @@ class SharedBottomNavBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildNavItem(
-              context: context,
               icon: Icons.grid_view_rounded,
               label: 'DASHBOARD',
               index: 0,
             ),
             _buildNavItem(
-              context: context,
               icon: LucideIcons.package,
               label: 'PRODUCTS',
               index: 1,
             ),
             _buildNavItem(
-              context: context,
               icon: Icons.receipt_long_rounded,
               label: 'LEDGER',
               index: 2,
             ),
             _buildNavItem(
-              context: context,
               icon: Icons.analytics_outlined,
               label: 'STATS',
               index: 3,
             ),
             _buildNavItem(
-              context: context,
               icon: Icons.person_outline,
               label: 'PROFILE',
               index: 4,
@@ -91,14 +71,13 @@ class SharedBottomNavBar extends StatelessWidget {
   }
 
   Widget _buildNavItem({
-    required BuildContext context,
     required IconData icon,
     required String label,
     required int index,
   }) {
-    final isSelected = selectedIndex == index;
+    final isSelected = navigationShell.currentIndex == index;
     return GestureDetector(
-      onTap: () => _onItemTapped(context, index),
+      onTap: () => _onItemTapped(index),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         decoration: BoxDecoration(

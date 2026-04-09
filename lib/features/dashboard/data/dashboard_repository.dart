@@ -71,6 +71,18 @@ Stream<QuerySnapshot<Map<String, dynamic>>> lySalesStream(Ref ref) {
 }
 
 // ---------------------------------------------------------------------------
+// Stream: All Sales Transactions
+// ---------------------------------------------------------------------------
+@Riverpod(keepAlive: true)
+Stream<QuerySnapshot<Map<String, dynamic>>> allSalesStream(Ref ref) {
+  final db = ref.watch(firestoreProvider);
+  return db
+      .collection('transactions')
+      .where('type', isEqualTo: 'sale')
+      .snapshots();
+}
+
+// ---------------------------------------------------------------------------
 // Aggregator – instantly returns DashboardStats.empty while streams load,
 // then reacts to every snapshot update in real-time.
 // ---------------------------------------------------------------------------
@@ -80,13 +92,15 @@ DashboardStats dashboardStats(Ref ref) {
   final activitySnap = ref.watch(recentActivityStreamProvider).value;
   final todaySalesSnap = ref.watch(todaySalesStreamProvider).value;
   final lySalesSnap = ref.watch(lySalesStreamProvider).value;
+  final allSalesSnap = ref.watch(allSalesStreamProvider).value;
 
   // Return empty stats immediately so the UI renders instantly.
   // Each field will update as streams emit.
   if (productsSnap == null &&
       activitySnap == null &&
       todaySalesSnap == null &&
-      lySalesSnap == null) {
+      lySalesSnap == null &&
+      allSalesSnap == null) {
     return DashboardStats.empty;
   }
 
@@ -104,10 +118,12 @@ DashboardStats dashboardStats(Ref ref) {
   }
 
   double todaySalesTotal = 0;
+  double todayProfitTotal = 0;
   for (final doc in (todaySalesSnap?.docs ?? [])) {
     final data = doc.data();
     if (data['type'] == 'sale') {
       todaySalesTotal += (data['amount'] as num?)?.toDouble() ?? 0;
+      todayProfitTotal += (data['profit'] as num?)?.toDouble() ?? 0;
     }
   }
 
@@ -119,6 +135,11 @@ DashboardStats dashboardStats(Ref ref) {
     }
   }
 
+  int totalUnitsSold = 0;
+  for (final doc in (allSalesSnap?.docs ?? [])) {
+    totalUnitsSold += (doc.data()['qty'] as num?)?.toInt() ?? 0;
+  }
+
   final activityItems = (activitySnap?.docs ?? [])
       .map((doc) => ActivityItem.fromFirestore(doc))
       .toList();
@@ -126,9 +147,12 @@ DashboardStats dashboardStats(Ref ref) {
   return DashboardStats(
     totalProducts: productsSnap?.docs.length ?? 0,
     lowStockCount: lowStock,
+    totalUnitsSold: totalUnitsSold,
     totalInventoryValue: totalValue,
     todaySales: todaySalesTotal,
+    todayProfit: todayProfitTotal,
     lastYearTodaySales: lyTotal,
     recentActivity: activityItems,
   );
 }
+

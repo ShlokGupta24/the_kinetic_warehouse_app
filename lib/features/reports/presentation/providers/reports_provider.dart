@@ -63,3 +63,57 @@ final lowStockProductsProvider = Provider.autoDispose<AsyncValue<List<Map<String
         .toList();
   });
 });
+
+class SalesChartData {
+  final List<double> weeklySales; // Mon-Sun (length 7)
+  final List<double> monthlySales; // Weeks W1,W2,W3,W4,W5
+  
+  SalesChartData({required this.weeklySales, required this.monthlySales});
+  
+  double get maxWeekly => weeklySales.fold(0, (a, b) => a > b ? a : b);
+  double get maxMonthly => monthlySales.fold(0, (a, b) => a > b ? a : b);
+}
+
+final salesChartDataProvider = Provider.autoDispose<AsyncValue<SalesChartData>>((ref) {
+  final transactionsAsync = ref.watch(allTransactionsProvider);
+  return transactionsAsync.whenData((transactions) {
+    final List<double> weeklySales = List.filled(7, 0.0);
+    final List<double> monthlySales = List.filled(5, 0.0);
+    
+    final now = DateTime.now();
+    // Start of current week (Monday)
+    final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+    final startOfMon = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+    
+    // Start of current month
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    
+    for (var tx in transactions) {
+      if (tx['type'] == 'sale' || tx['type'] == 'outbound') {
+        final amount = (tx['amount'] as num?)?.toDouble() ?? 0.0;
+        final timestamp = (tx['timestamp'] as dynamic)?.toDate();
+        if (timestamp == null) continue;
+        
+        // Weekly mapping
+        if (timestamp.isAfter(startOfMon.subtract(const Duration(seconds: 1)))) {
+           final dayIndex = timestamp.weekday - 1; // 0 for Mon
+           if (dayIndex >= 0 && dayIndex < 7) {
+              weeklySales[dayIndex] += amount;
+           }
+        }
+        
+        // Monthly mapping
+        if (timestamp.isAfter(startOfMonth.subtract(const Duration(seconds: 1)))) {
+          final dayOfMonth = timestamp.day;
+          // Approximate weeks: 1-7=W1, 8-14=W2...
+          final weekIndex = (dayOfMonth - 1) ~/ 7;
+          if (weekIndex >= 0 && weekIndex < 5) {
+             monthlySales[weekIndex] += amount;
+          }
+        }
+      }
+    }
+    
+    return SalesChartData(weeklySales: weeklySales, monthlySales: monthlySales);
+  });
+});

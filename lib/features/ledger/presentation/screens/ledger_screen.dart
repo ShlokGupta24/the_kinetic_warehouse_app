@@ -1,17 +1,16 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/shared_bottom_nav_bar.dart';
 import '../../data/ledger_repository.dart';
 import '../widgets/transaction_card.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import '../../../users/data/users_repository.dart';
 
 // Providers for the ledger filters
 final ledgerFilterProvider = StateProvider<String>((ref) => 'All');
+final ledgerSortOrderProvider = StateProvider<bool>((ref) => true); // true = newest first, false = oldest first
 
 final ledgerTransactionsProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
   final repo = ref.watch(ledgerRepositoryProvider);
@@ -26,7 +25,9 @@ class LedgerScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final filter = ref.watch(ledgerFilterProvider);
+    final sortDesc = ref.watch(ledgerSortOrderProvider);
     final transactionsAsync = ref.watch(ledgerTransactionsProvider);
+    final usersAsync = ref.watch(allUsersStreamProvider);
 
     return Scaffold(
       backgroundColor: AppColors.surface,
@@ -131,7 +132,7 @@ class LedgerScreen extends ConsumerWidget {
             SizedBox(height: 32.h),
 
             // Bento Grid Stats
-            _buildStatsBento(),
+            _buildStatsBento(context, ref, transactionsAsync.valueOrNull ?? [], usersAsync.valueOrNull?.docs.length ?? 0),
             SizedBox(height: 32.h),
 
             // Transaction Feed header
@@ -147,7 +148,41 @@ class LedgerScreen extends ConsumerWidget {
                     color: AppColors.onSurfaceVariant,
                   ),
                 ),
-                Icon(Icons.filter_list, color: AppColors.onSurfaceVariant, size: 20.sp),
+                GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet(
+                      context: context,
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.r))),
+                      builder: (bottomSheetContext) => SafeArea(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ListTile(
+                              leading: const Icon(Icons.arrow_downward),
+                              title: const Text('Newest First'),
+                              trailing: sortDesc ? const Icon(Icons.check, color: AppColors.primary) : null,
+                              onTap: () {
+                                ref.read(ledgerSortOrderProvider.notifier).state = true;
+                                Navigator.pop(bottomSheetContext);
+                              },
+                            ),
+                            ListTile(
+                              leading: const Icon(Icons.arrow_upward),
+                              title: const Text('Oldest First'),
+                              trailing: !sortDesc ? const Icon(Icons.check, color: AppColors.primary) : null,
+                              onTap: () {
+                                ref.read(ledgerSortOrderProvider.notifier).state = false;
+                                Navigator.pop(bottomSheetContext);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  child: Icon(Icons.filter_list, color: AppColors.onSurfaceVariant, size: 20.sp),
+                ),
               ],
             ),
             SizedBox(height: 16.h),
@@ -156,13 +191,23 @@ class LedgerScreen extends ConsumerWidget {
             transactionsAsync.when(
               data: (transactions) {
                 // Filter locally
-                final filtered = transactions.where((tx) {
+                var filtered = transactions.where((tx) {
                   final type = (tx['type'] as String?)?.toLowerCase() ?? 'purchase';
                   final isPur = type == 'purchase' || type == 'restock' || type == 'inbound';
                   if (filter == 'Purchases' && !isPur) return false;
                   if (filter == 'Sales' && isPur) return false;
                   return true;
                 }).toList();
+
+                // Sort locally
+                filtered.sort((a, b) {
+                  final tA = a['timestamp'];
+                  final tB = b['timestamp'];
+                  if (tA == null || tB == null) return 0;
+                  final dtA = tA.toDate() as DateTime;
+                  final dtB = tB.toDate() as DateTime;
+                  return sortDesc ? dtB.compareTo(dtA) : dtA.compareTo(dtB);
+                });
 
                 if (filtered.isEmpty) {
                   return Center(
@@ -189,15 +234,6 @@ class LedgerScreen extends ConsumerWidget {
           ],
         ),
       ),
-      floatingActionButton: Padding(
-        padding: EdgeInsets.only(bottom: 90.h),
-        child: FloatingActionButton(
-          onPressed: () => context.push('/add-transaction'),
-          backgroundColor: AppColors.primary,
-          child: const Icon(Icons.add, color: Colors.white),
-        ),
-      ),
-      bottomNavigationBar: const SharedBottomNavBar(selectedIndex: 2),
     );
   }
 
@@ -227,11 +263,47 @@ class LedgerScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildStatsBento() {
+  Widget _buildStatsBento(BuildContext context, WidgetRef ref, List<Map<String, dynamic>> transactions, int totalStaff) {
+    // Calculate Today's Inflow
+    int sumInflow = 0;
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+
+    int totalOutbound = 0;
+    int totalInbound = 0;
+
+    for (var tx in transactions) {
+      final type = (tx['type'] as String?)?.toLowerCase() ?? 'purchase';
+      final isInbound = type == 'purchase' || type == 'restock' || type == 'inbound';
+      final qty = (tx['qty'] as num?)?.toInt() ?? 0;
+      
+      if (isInbound) {
+        totalInbound += qty;
+        
+        final t = tx['timestamp'];
+        if (t != null) {
+          final dt = t.toDate() as DateTime;
+          if (dt.isAfter(startOfDay) || dt.isAtSameMomentAs(startOfDay)) {
+            sumInflow += qty;
+          }
+        }
+      } else {
+        totalOutbound += qty;
+      }
+    }
+
+    // Calculate Stock Turnover
+    double turnover = 0;
+    if (totalInbound > 0) {
+       turnover = (totalOutbound / totalInbound) * 100;
+    }
+
     return Column(
       children: [
         // Today Inflow
-        Container(
+        GestureDetector(
+          onTap: () => _showTodayInflowDetails(context),
+          child: Container(
           width: double.infinity,
           padding: EdgeInsets.all(24.r),
           decoration: BoxDecoration(
@@ -257,7 +329,7 @@ class LedgerScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  Text('+842', style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w900, color: AppColors.primary)),
+                  Text('+$sumInflow', style: TextStyle(fontSize: 32.sp, fontWeight: FontWeight.w900, color: AppColors.primary)),
                   SizedBox(width: 8.w),
                   Text('UNITS', style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.bold, color: AppColors.primaryContainer)),
                 ],
@@ -265,12 +337,15 @@ class LedgerScreen extends ConsumerWidget {
             ],
           ),
         ),
+        ),
         SizedBox(height: 16.h),
         Row(
           children: [
             // Velocity
             Expanded(
-              child: Container(
+              child: GestureDetector(
+                onTap: () => _showStockTurnoverDetails(context),
+                child: Container(
                 padding: EdgeInsets.all(24.r),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -285,15 +360,18 @@ class LedgerScreen extends ConsumerWidget {
                   children: [
                     Text('Stock Turnover', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w500, color: AppColors.onSurfaceVariant)),
                     SizedBox(height: 4.h),
-                    Text('12.4%', style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w900, color: AppColors.secondary)),
+                    Text('${turnover.toStringAsFixed(1)}%', style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.w900, color: AppColors.secondary)),
                   ],
                 ),
+              ),
               ),
             ),
             SizedBox(width: 16.h),
             // Active Staff
             Expanded(
-              child: Container(
+              child: GestureDetector(
+                onTap: () => _showActiveStaffDetails(context, ref),
+                child: Container(
                 padding: EdgeInsets.all(24.r),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -315,16 +393,207 @@ class LedgerScreen extends ConsumerWidget {
                           child: Icon(Icons.person, size: 16.sp, color: Colors.white),
                         ),
                         SizedBox(width: 8.w),
-                        Text('Alex +4', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppColors.onSurface)),
+                        Text('$totalStaff Users', style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold, color: AppColors.onSurface)),
                       ],
                     ),
                   ],
                 ),
               ),
+              ),
             ),
           ],
         )
       ],
+    );
+  }
+
+  void _showTodayInflowDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => _buildDetailCard(
+        title: "Today's Inflow",
+        icon: Icons.south_east_rounded,
+        iconColor: AppColors.primary,
+        description: "Tracks incoming inventory volume (purchases and restocks) recorded since 12:00 AM today.",
+        formula: "Sum of Qty of transactions where type is purchase, restock, or inbound AND date = today",
+        businessTip: "Use this metric to ensure daily deliveries meet operational requirements. If this number is lower than outbound velocity, you may face stock shortages soon.",
+      ),
+    );
+  }
+
+  void _showStockTurnoverDetails(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) => _buildDetailCard(
+        title: "Stock Turnover",
+        icon: Icons.sync,
+        iconColor: AppColors.secondary,
+        description: "Measures overall inventory throughput efficiency by comparing historical stock leaving the warehouse versus stock entering it.",
+        formula: "(Total Units Sold / Total Units Received) x 100",
+        businessTip: "A high turnover percentage suggests strong demand and efficient stock movement. A low number indicates overstocking or obsolete inventory holding capital hostage.",
+      ),
+    );
+  }
+
+  void _showActiveStaffDetails(BuildContext context, WidgetRef ref) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        final usersAsync = ref.watch(allUsersStreamProvider);
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.95),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+          ),
+          padding: EdgeInsets.all(32.r),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: AppColors.primary.withOpacity(0.1),
+                      child: Icon(Icons.people, color: AppColors.primary, size: 24.sp),
+                    ),
+                    SizedBox(width: 16.w),
+                    Text(
+                      "Active Staff",
+                      style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold, color: AppColors.onSurface),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 24.h),
+                usersAsync.when(
+                  data: (data) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: data.docs.length,
+                      itemBuilder: (context, index) {
+                        final user = data.docs[index].data();
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: CircleAvatar(
+                            backgroundColor: AppColors.primaryContainer,
+                            child: Text(
+                              user['name']?.toString().substring(0, 1).toUpperCase() ?? 'U',
+                              style: TextStyle(color: AppColors.onPrimaryContainer, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          title: Text(user['name'] ?? 'Unknown User', style: const TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text(user['email'] ?? 'No email'),
+                          trailing: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+                            decoration: BoxDecoration(
+                              color: AppColors.secondaryContainer,
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                            child: const Text('Active', style: TextStyle(color: AppColors.secondary, fontWeight: FontWeight.bold, fontSize: 12)),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  loading: () => const Center(child: CircularProgressIndicator()),
+                  error: (e, s) => Text('Error loading staff: $e'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildDetailCard({
+    required String title,
+    required IconData icon,
+    required Color iconColor,
+    required String description,
+    required String formula,
+    required String businessTip,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95), // Slight glassmorphism
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 40,
+            offset: const Offset(0, -10),
+          )
+        ],
+      ),
+      padding: EdgeInsets.all(32.r),
+      child: SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: iconColor.withOpacity(0.1),
+                  child: Icon(icon, color: iconColor, size: 24.sp),
+                ),
+                SizedBox(width: 16.w),
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 24.sp, fontWeight: FontWeight.bold, color: AppColors.onSurface),
+                ),
+              ],
+            ),
+            SizedBox(height: 24.h),
+            Text(
+              "What it means",
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w900, color: AppColors.onSurfaceVariant, letterSpacing: 1),
+            ),
+            SizedBox(height: 8.h),
+            Text(description, style: TextStyle(fontSize: 16.sp, color: AppColors.onSurface, height: 1.5)),
+            SizedBox(height: 24.h),
+            
+            Container(
+              padding: EdgeInsets.all(16.r),
+              decoration: BoxDecoration(color: AppColors.surfaceVariant.withOpacity(0.5), borderRadius: BorderRadius.circular(16.r)),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                   Text(
+                    "Calculation",
+                    style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w900, color: AppColors.onSurfaceVariant, letterSpacing: 1),
+                  ),
+                  SizedBox(height: 8.h),
+                  Text(formula, style: TextStyle(fontFamily: 'monospace', fontSize: 13.sp, color: AppColors.onSurfaceVariant)),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 24.h),
+            Text(
+              "Business Application",
+              style: TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w900, color: AppColors.onSurfaceVariant, letterSpacing: 1),
+            ),
+            SizedBox(height: 8.h),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.lightbulb, color: AppColors.tertiary, size: 20.sp),
+                SizedBox(width: 12.w),
+                Expanded(child: Text(businessTip, style: TextStyle(fontSize: 14.sp, color: AppColors.onSurface, height: 1.5))),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

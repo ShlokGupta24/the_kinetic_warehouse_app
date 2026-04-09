@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/shared_bottom_nav_bar.dart';
 import '../../data/users_repository.dart';
 
 class UsersScreen extends ConsumerWidget {
@@ -152,7 +151,6 @@ class UsersScreen extends ConsumerWidget {
           label: Text('Add User', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14.sp)),
         ),
       ),
-      bottomNavigationBar: const SharedBottomNavBar(selectedIndex: 4),
     );
   }
 

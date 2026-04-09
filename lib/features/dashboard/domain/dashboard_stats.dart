@@ -49,16 +49,20 @@ class ActivityItem {
 class DashboardStats {
   final int totalProducts;
   final int lowStockCount;
+  final int totalUnitsSold;
   final double totalInventoryValue; // in ₹
   final double todaySales; // in ₹
+  final double todayProfit; // in ₹
   final double lastYearTodaySales; // for % comparison
   final List<ActivityItem> recentActivity;
 
   const DashboardStats({
     required this.totalProducts,
     required this.lowStockCount,
+    required this.totalUnitsSold,
     required this.totalInventoryValue,
     required this.todaySales,
+    required this.todayProfit,
     required this.lastYearTodaySales,
     required this.recentActivity,
   });
@@ -72,8 +76,10 @@ class DashboardStats {
   static const DashboardStats empty = DashboardStats(
     totalProducts: 0,
     lowStockCount: 0,
+    totalUnitsSold: 0,
     totalInventoryValue: 0,
     todaySales: 0,
+    todayProfit: 0,
     lastYearTodaySales: 0,
     recentActivity: [],
   );

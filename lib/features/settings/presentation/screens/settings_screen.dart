@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/shared_bottom_nav_bar.dart';
 import '../../../auth/presentation/providers/auth_controller.dart';
 import '../../../auth/domain/auth_repository.dart';
 
@@ -171,7 +170,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const SharedBottomNavBar(selectedIndex: 4),
     );
   }
 

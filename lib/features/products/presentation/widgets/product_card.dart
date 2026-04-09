@@ -1,14 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../data/product_repository.dart';
 
-class ProductCard extends StatelessWidget {
+class ProductCard extends ConsumerWidget {
   final Map<String, dynamic> product;
 
   const ProductCard({super.key, required this.product});
 
+  Future<void> _confirmDelete(BuildContext context, WidgetRef ref) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Product?'),
+        content: const Text(
+          'This will permanently delete the product and all associated transactions. This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => context.pop(true),
+            style: TextButton.styleFrom(foregroundColor: AppColors.error),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      try {
+         await ref.read(productRepositoryProvider).deleteProduct(
+           product['id'] as String,
+           product['sku'] as String? ?? '',
+         );
+         if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             const SnackBar(content: Text('Product deleted successfully')),
+           );
+         }
+      } catch (e) {
+         if (context.mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text('Failed to delete product: $e')),
+           );
+         }
+      }
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final name = product['name'] as String? ?? 'Unknown Product';
     final category = product['category'] as String? ?? 'General';
     final qty = (product['qty'] as num?)?.toInt() ?? 0;
@@ -20,9 +66,7 @@ class ProductCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // Tapping routes to add-product acting as edit or placeholder for now
-        // Currently, we will just demonstrate a print or basic route.
-        debugPrint('Tapped on product: \${product["id"]}');
+        context.push('/edit-product', extra: product);
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
@@ -76,25 +120,50 @@ class ProductCard extends StatelessWidget {
                           color: AppColors.secondary,
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-                        decoration: BoxDecoration(
-                          color: isLowStock ? const Color(0xFFFEF2F2) : const Color(0xFFECFDF5),
-                          borderRadius: BorderRadius.circular(12.r),
-                        ),
-                        child: Text(
-                          isLowStock ? 'LOW STOCK' : 'IN STOCK',
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: -0.5,
-                            color: isLowStock ? AppColors.error : AppColors.primary,
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: isLowStock ? const Color(0xFFFEF2F2) : const Color(0xFFECFDF5),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Text(
+                              isLowStock ? 'LOW STOCK' : 'IN STOCK',
+                              style: TextStyle(
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: -0.5,
+                                color: isLowStock ? AppColors.error : AppColors.primary,
+                              ),
+                            ),
                           ),
-                        ),
+                          SizedBox(width: 4.w),
+                          PopupMenuButton<String>(
+                            onSelected: (value) {
+                              if (value == 'edit') {
+                                context.push('/edit-product', extra: product);
+                              } else if (value == 'delete') {
+                                _confirmDelete(context, ref);
+                              }
+                            },
+                            icon: const Icon(Icons.more_vert, size: 20),
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 'edit',
+                                child: Text('Edit'),
+                              ),
+                              PopupMenuItem(
+                                value: 'delete',
+                                child: Text('Delete', style: TextStyle(color: AppColors.error)),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  SizedBox(height: 4.h),
                   Text(
                     name,
                     style: TextStyle(

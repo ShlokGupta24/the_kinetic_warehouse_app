@@ -28,13 +28,20 @@ class LedgerRepository {
         throw Exception("Product does not exist!");
       }
 
-      final currentQty = (productDoc.data()?['qty'] as num?)?.toInt() ?? 0;
+      final data = productDoc.data()!;
+      final currentQty = (data['qty'] as num?)?.toInt() ?? 0;
       final newQty = isPurchase ? currentQty + qty : currentQty - qty;
+      final costPrice = (data['costPrice'] as num?)?.toDouble() ?? 0.0;
+      final sellingPrice = (data['price'] as num?)?.toDouble() ?? 0.0;
 
       // Ensure we don't end up with negative stock for sales
       if (!isPurchase && newQty < 0) {
         throw Exception("Insufficient stock!");
       }
+
+      // Calculate amount and profit
+      final amount = isPurchase ? costPrice * qty : sellingPrice * qty;
+      final profit = isPurchase ? 0.0 : (sellingPrice - costPrice) * qty;
 
       // Update product quantity
       transaction.update(productRef, {'qty': newQty});
@@ -43,9 +50,11 @@ class LedgerRepository {
       transaction.set(transactionRef, {
         'type': isPurchase ? 'purchase' : 'sale',
         'title': productName,
-        'subtitle': 'Staff: \$staffName',
+        'subtitle': 'Staff: $staffName',
         'productSku': productSku,
         'qty': qty,
+        'amount': amount,
+        'profit': profit,
         'timestamp': FieldValue.serverTimestamp(),
       });
     });

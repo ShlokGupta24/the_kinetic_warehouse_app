@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/widgets/shared_bottom_nav_bar.dart';
 import '../providers/reports_provider.dart';
 
 class ReportsScreen extends ConsumerStatefulWidget {
@@ -97,7 +96,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
             SizedBox(height: 24.h),
 
             // Sales Trend
-            _buildSalesTrendLineChart(),
+            _buildSalesTrendLineChart(ref),
             SizedBox(height: 24.h),
 
             // Top Sellers
@@ -142,7 +141,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const SharedBottomNavBar(selectedIndex: 3),
     );
   }
 
@@ -216,7 +214,9 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
     );
   }
 
-  Widget _buildSalesTrendLineChart() {
+  Widget _buildSalesTrendLineChart(WidgetRef ref) {
+    final chartDataAsync = ref.watch(salesChartDataProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -275,87 +275,94 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
               BoxShadow(color: const Color(0xFF0B1C30).withOpacity(0.04), blurRadius: 24, offset: const Offset(0, 8)),
             ],
           ),
-          child: LineChart(
-            LineChartData(
-              gridData: FlGridData(
-                show: true,
-                drawVerticalLine: false,
-                horizontalInterval: 1,
-                getDrawingHorizontalLine: (value) {
-                  return FlLine(color: AppColors.outlineVariant.withOpacity(0.3), strokeWidth: 1);
-                },
-              ),
-              titlesData: FlTitlesData(
-                show: true,
-                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                bottomTitles: AxisTitles(
-                  sideTitles: SideTitles(
-                    showTitles: true,
-                    reservedSize: 22,
-                    interval: 1,
-                    getTitlesWidget: (value, meta) {
-                      final style = TextStyle(color: AppColors.onSurfaceVariant.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 10.sp);
-                      Widget text;
-                      if (isWeekly) {
-                        switch (value.toInt()) {
-                          case 0: text = Text('MON', style: style); break;
-                          case 1: text = Text('TUE', style: style); break;
-                          case 2: text = Text('WED', style: style); break;
-                          case 3: text = Text('THU', style: style); break;
-                          case 4: text = Text('FRI', style: style); break;
-                          case 5: text = Text('SAT', style: style); break;
-                          case 6: text = Text('SUN', style: style); break;
-                          default: text = const Text(''); break;
-                        }
-                      } else {
-                        switch (value.toInt()) {
-                          case 0: text = Text('W1', style: style); break;
-                          case 2: text = Text('W2', style: style); break;
-                          case 4: text = Text('W3', style: style); break;
-                          case 6: text = Text('W4', style: style); break;
-                          default: text = const Text(''); break;
-                        }
-                      }
-                      return SideTitleWidget(meta: meta, child: text);
+          child: chartDataAsync.when(
+            data: (chartData) {
+               final maxVal = isWeekly ? chartData.maxWeekly : chartData.maxMonthly;
+               final maxY = maxVal == 0 ? 100.0 : maxVal * 1.2; // Add 20% headroom
+
+               List<FlSpot> spots = [];
+               if (isWeekly) {
+                 for (int i = 0; i < 7; i++) {
+                   spots.add(FlSpot(i.toDouble(), chartData.weeklySales[i]));
+                 }
+               } else {
+                 for (int i = 0; i < 5; i++) {
+                   // map points to 0..6 spacing evenly or 0, 1.5, 3, 4.5, 6
+                   spots.add(FlSpot(i * 1.5, chartData.monthlySales[i]));
+                 }
+               }
+
+               return LineChart(
+                LineChartData(
+                  gridData: FlGridData(
+                    show: true,
+                    drawVerticalLine: false,
+                    horizontalInterval: maxY / 5 > 0 ? maxY / 5 : 20,
+                    getDrawingHorizontalLine: (value) {
+                      return FlLine(color: AppColors.outlineVariant.withOpacity(0.3), strokeWidth: 1);
                     },
                   ),
-                ),
-              ),
-              borderData: FlBorderData(show: false),
-              minX: 0,
-              maxX: 6,
-              minY: 0,
-              maxY: 5,
-              lineBarsData: [
-                LineChartBarData(
-                  spots: isWeekly ? const [
-                    FlSpot(0, 1),
-                    FlSpot(1, 1.5),
-                    FlSpot(2, 1.4),
-                    FlSpot(3, 3.4),
-                    FlSpot(4, 2),
-                    FlSpot(5, 2.2),
-                    FlSpot(6, 1.8),
-                  ] : const [
-                    FlSpot(0, 2),
-                    FlSpot(2, 1.5),
-                    FlSpot(4, 4),
-                    FlSpot(6, 3.2),
-                  ],
-                  isCurved: true,
-                  color: AppColors.primary,
-                  barWidth: 4,
-                  isStrokeCapRound: true,
-                  dotData: const FlDotData(show: false),
-                  belowBarData: BarAreaData(
+                  titlesData: FlTitlesData(
                     show: true,
-                    color: AppColors.primaryContainer.withOpacity(0.15),
+                    rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 22,
+                        interval: 1,
+                        getTitlesWidget: (value, meta) {
+                          final style = TextStyle(color: AppColors.onSurfaceVariant.withOpacity(0.5), fontWeight: FontWeight.bold, fontSize: 10.sp);
+                          Widget text;
+                          if (isWeekly) {
+                            switch (value.toInt()) {
+                              case 0: text = Text('MON', style: style); break;
+                              case 1: text = Text('TUE', style: style); break;
+                              case 2: text = Text('WED', style: style); break;
+                              case 3: text = Text('THU', style: style); break;
+                              case 4: text = Text('FRI', style: style); break;
+                              case 5: text = Text('SAT', style: style); break;
+                              case 6: text = Text('SUN', style: style); break;
+                              default: text = const Text(''); break;
+                            }
+                          } else {
+                            if (value == 0) text = Text('W1', style: style);
+                            else if (value == 1.5) text = Text('W2', style: style);
+                            else if (value == 3) text = Text('W3', style: style);
+                            else if (value == 4.5) text = Text('W4', style: style);
+                            else if (value == 6) text = Text('W5', style: style);
+                            else text = const Text('');
+                          }
+                          return SideTitleWidget(meta: meta, child: text);
+                        },
+                      ),
+                    ),
                   ),
+                  borderData: FlBorderData(show: false),
+                  minX: 0,
+                  maxX: 6,
+                  minY: 0,
+                  maxY: maxY,
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: spots,
+                      isCurved: true,
+                      color: AppColors.primary,
+                      barWidth: 4,
+                      isStrokeCapRound: true,
+                      dotData: const FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: AppColors.primaryContainer.withOpacity(0.15),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (e, st) => Center(child: Text('Chart Error: $e')),
           ),
         ),
       ],
