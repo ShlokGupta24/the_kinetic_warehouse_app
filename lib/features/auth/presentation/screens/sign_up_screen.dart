@@ -69,7 +69,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 width: 250.r,
                 height: 250.r,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                  color: AppColors.primaryContainer.withOpacity(0.15),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -84,7 +84,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 width: 250.r,
                 height: 250.r,
                 decoration: BoxDecoration(
-                  color: AppColors.secondaryContainer.withValues(alpha: 0.1),
+                  color: AppColors.secondaryContainer.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -107,9 +107,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           borderRadius: BorderRadius.circular(12.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryContainer.withValues(
-                                alpha: 0.2,
-                              ),
+                              color: AppColors.primaryContainer.withOpacity(0.2),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -284,7 +282,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       borderRadius: BorderRadius.circular(12.r),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.2),
+                          color: AppColors.primary.withOpacity(0.2),
                           blurRadius: 15,
                           offset: const Offset(0, 8),
                         ),
@@ -356,7 +354,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       Expanded(
                         child: Container(
                           height: 1,
-                          color: AppColors.outline.withValues(alpha: 0.1),
+                          color: AppColors.outline.withOpacity(0.1),
                         ),
                       ),
                       Container(
@@ -374,7 +372,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       Expanded(
                         child: Container(
                           height: 1,
-                          color: AppColors.outline.withValues(alpha: 0.1),
+                          color: AppColors.outline.withOpacity(0.1),
                         ),
                       ),
                     ],
@@ -490,7 +488,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isFocused
-              ? AppColors.primary.withValues(alpha: 0.2)
+              ? AppColors.primary.withOpacity(0.2)
               : Colors.transparent,
           width: 2,
         ),
@@ -503,7 +501,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         style: TextStyle(color: AppColors.onSurface, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(color: AppColors.outline.withValues(alpha: 0.5)),
+          hintStyle: TextStyle(color: AppColors.outline.withOpacity(0.5)),
           prefixIcon: Icon(
             icon,
             size: 20.r,

@@ -48,10 +48,10 @@ class _ForgotPasswordDialogState extends ConsumerState<ForgotPasswordDialog> {
           // Glassmorphic backdrop
           Container(
             decoration: BoxDecoration(
-              color: AppColors.surfaceContainerLow.withValues(alpha: 0.4),
+              color: AppColors.surfaceContainerLow.withOpacity(0.4),
               borderRadius: BorderRadius.circular(20.r),
               border: Border.all(
-                color: AppColors.outline.withValues(alpha: 0.2),
+                color: AppColors.outline.withOpacity(0.2),
                 width: 1,
               ),
             ),
@@ -93,7 +93,7 @@ class _ForgotPasswordDialogState extends ConsumerState<ForgotPasswordDialog> {
                     ),
                     filled: true,
                     // Replaced removed surfaceContainerHighest with surfaceContainerHigh
-                    fillColor: AppColors.surfaceContainerHigh.withValues(alpha: 0.6),
+                    fillColor: AppColors.surfaceContainerHigh.withOpacity(0.6),
                   ),
                 ),
                 SizedBox(height: 24.h),

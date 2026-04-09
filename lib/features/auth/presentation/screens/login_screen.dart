@@ -56,7 +56,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 width: 250.r,
                 height: 250.r,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryContainer.withValues(alpha: 0.15),
+                  color: AppColors.primaryContainer.withOpacity(0.15),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -71,7 +71,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 width: 250.r,
                 height: 250.r,
                 decoration: BoxDecoration(
-                  color: AppColors.secondaryContainer.withValues(alpha: 0.1),
+                  color: AppColors.secondaryContainer.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -94,9 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           borderRadius: BorderRadius.circular(12.r),
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.primaryContainer.withValues(
-                                alpha: 0.2,
-                              ),
+                              color: AppColors.primaryContainer.withOpacity(0.2),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),
@@ -230,7 +228,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       borderRadius: BorderRadius.circular(12.r),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.2),
+                          color: AppColors.primary.withOpacity(0.2),
                           blurRadius: 15,
                           offset: const Offset(0, 8),
                         ),
@@ -242,7 +240,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         onTap: authState.isLoading
                             ? null
                             : () {
-                                ref.read(authControllerProvider.notifier).signInWithEmailAndPassword(
+                                ref
+                                    .read(authControllerProvider.notifier)
+                                    .signInWithEmailAndPassword(
                                       _emailController.text.trim(),
                                       _passwordController.text.trim(),
                                       context,
@@ -256,7 +256,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               const SizedBox(
                                 height: 20,
                                 width: 20,
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
                               )
                             else ...[
                               Text(
@@ -287,7 +290,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Expanded(
                         child: Container(
                           height: 1,
-                          color: AppColors.outline.withValues(alpha: 0.1),
+                          color: AppColors.outline.withOpacity(0.1),
                         ),
                       ),
                       Container(
@@ -305,7 +308,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       Expanded(
                         child: Container(
                           height: 1,
-                          color: AppColors.outline.withValues(alpha: 0.1),
+                          color: AppColors.outline.withOpacity(0.1),
                         ),
                       ),
                     ],
@@ -329,7 +332,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: InkWell(
                         onTap: authState.isLoading
                             ? null
-                            : () => ref.read(authControllerProvider.notifier).signInWithGoogle(context),
+                            : () => ref
+                                  .read(authControllerProvider.notifier)
+                                  .signInWithGoogle(context),
                         borderRadius: BorderRadius.circular(12.r),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -386,57 +391,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 48.h),
-
-                  // Support Banner
-                  Container(
-                    padding: EdgeInsets.all(24.r),
-                    decoration: BoxDecoration(
-                      color: AppColors.surfaceContainerLow,
-                      borderRadius: BorderRadius.circular(24.r),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(12.r),
-                          decoration: BoxDecoration(
-                            color: AppColors.surfaceContainerLowest,
-                            borderRadius: BorderRadius.circular(16.r),
-                          ),
-                          child: Icon(
-                            LucideIcons.headset,
-                            color: AppColors.secondary,
-                            size: 24.r,
-                          ),
-                        ),
-                        SizedBox(width: 16.w),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'NEED ASSISTANCE?',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1,
-                                  color: AppColors.onSurface,
-                                ),
-                              ),
-                              SizedBox(height: 2.h),
-                              Text(
-                                'Our curation team is here to help 24/7.',
-                                style: TextStyle(
-                                  fontSize: 12.sp,
-                                  color: AppColors.onSurfaceVariant,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -465,7 +419,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
           color: isFocused
-              ? AppColors.primary.withValues(alpha: 0.2)
+              ? AppColors.primary.withOpacity(0.2)
               : Colors.transparent,
           width: 2,
         ),
@@ -478,7 +432,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         style: TextStyle(color: AppColors.onSurface, fontSize: 16.sp),
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(color: AppColors.outline.withValues(alpha: 0.5)),
+          hintStyle: TextStyle(color: AppColors.outline.withOpacity(0.5)),
           prefixIcon: Icon(
             icon,
             size: 20.r,

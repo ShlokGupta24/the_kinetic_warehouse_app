@@ -46,7 +46,7 @@ class AppTheme {
           borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: Color(0xFFE5EEFF), width: 1),
         ),
-        shadowColor: AppColors.secondary.withValues(alpha: 0.1),
+        shadowColor: AppColors.secondary.withOpacity(0.1),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -83,7 +83,7 @@ class AppTheme {
           ),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           elevation: 4,
-          shadowColor: AppColors.primary.withValues(alpha: 0.3),
+          shadowColor: AppColors.primary.withOpacity(0.3),
         ),
       ),
     );
