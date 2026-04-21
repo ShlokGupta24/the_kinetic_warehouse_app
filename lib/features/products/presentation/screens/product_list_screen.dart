@@ -46,7 +46,7 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: SafeArea(
                 bottom: false,
@@ -58,7 +58,7 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                         Icon(LucideIcons.store, color: AppColors.primary, size: 22.sp),
                         SizedBox(width: 8.w),
                         Text(
-                          'THE KINETIC WAREHOUSE',
+                          'Kinetic Warehouse',
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w900,
@@ -68,12 +68,6 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.cloud_off, color: Colors.grey.shade400),
-                      onPressed: () {},
-                      constraints: const BoxConstraints(),
-                      padding: EdgeInsets.zero,
-                    )
                   ],
                 ),
               ),
@@ -100,7 +94,7 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                         onChanged: (val) => ref.read(searchQueryProvider.notifier).state = val,
                         decoration: InputDecoration(
                           hintText: 'Search products...',
-                          hintStyle: TextStyle(color: AppColors.outline.withOpacity(0.6)),
+                          hintStyle: TextStyle(color: AppColors.outline.withValues(alpha: 0.6)),
                           prefixIcon: Icon(Icons.search, color: AppColors.outline),
                           border: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -120,7 +114,7 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
                       borderRadius: BorderRadius.circular(12.r),
                       boxShadow: [
                         BoxShadow(
-                          color: AppColors.primary.withOpacity(0.2),
+                          color: AppColors.primary.withValues(alpha: 0.2),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -266,7 +260,7 @@ class _ProductListScreenState extends ConsumerState<ProductListScreen> {
         padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.surfaceContainerHigh : Colors.white,
-          border: Border.all(color: AppColors.outlineVariant.withOpacity(0.3)),
+          border: Border.all(color: AppColors.outlineVariant.withValues(alpha: 0.3)),
           borderRadius: BorderRadius.circular(20.r),
         ),
         child: Row(

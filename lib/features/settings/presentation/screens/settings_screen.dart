@@ -18,7 +18,6 @@ class SettingsScreen extends ConsumerStatefulWidget {
 class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   bool _notificationsEnabled = true;
   bool _stockAlertsEnabled = true;
-  bool _darkMode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: SafeArea(
                 bottom: false,
@@ -94,7 +93,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               _SettingsTile(
                 icon: LucideIcons.building,
                 title: 'Business Details',
-                subtitle: 'The Kinetic Warehouse LLC',
+                subtitle: 'Kinetic Warehouse LLC',
                 onTap: () {},
               ),
               _SettingsTile(
@@ -132,15 +131,6 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 value: _stockAlertsEnabled,
                 onChanged: (val) => setState(() => _stockAlertsEnabled = val),
               ),
-              _SettingsSwitch(
-                icon: LucideIcons.moon,
-                title: 'Dark Mode',
-                value: _darkMode,
-                onChanged: (val) {
-                  // Scaffold functionality for dark mode could be tied to Riverpod later
-                  setState(() => _darkMode = val);
-                },
-              ),
             ]),
             SizedBox(height: 32.h),
 
@@ -175,7 +165,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
 
   Widget _buildProfileCard(dynamic user) {
     final email = user?.email ?? 'Unknown User';
-    final name = email.split('@')[0].toUpperCase();
+    final name = (user?.displayName?.isNotEmpty == true) ? user!.displayName! : email.split('@')[0].toUpperCase();
 
     return Container(
       padding: EdgeInsets.all(20.r),
@@ -232,9 +222,54 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               style: TextStyle(fontSize: 10.sp, fontWeight: FontWeight.bold, letterSpacing: 1.0, color: AppColors.primary),
             ),
           ),
+          SizedBox(width: 8.w),
+          IconButton(
+            icon: Icon(LucideIcons.pencil, size: 20.sp, color: AppColors.outline),
+            onPressed: () => _editProfile(context, user, name),
+            constraints: const BoxConstraints(),
+            padding: EdgeInsets.all(8.r),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _editProfile(BuildContext context, dynamic user, String currentName) async {
+    final controller = TextEditingController(text: currentName);
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Edit Profile', style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold)),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            labelText: 'Name',
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('CANCEL')),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, controller.text.trim()),
+            child: const Text('SAVE'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result.isNotEmpty && result != currentName && user != null) {
+      try {
+        await user.updateDisplayName(result);
+        await user.reload();
+        if (mounted) {
+          setState(() {});
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Profile updated successfully')));
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to update profile: $e')));
+        }
+      }
+    }
   }
 
   Widget _buildSettingsList(List<Widget> children) {

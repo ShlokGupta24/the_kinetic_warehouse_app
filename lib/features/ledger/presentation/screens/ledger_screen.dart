@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +13,7 @@ final ledgerFilterProvider = StateProvider<String>((ref) => 'All');
 final ledgerSortOrderProvider = StateProvider<bool>((ref) => true); // true = newest first, false = oldest first
 
 final ledgerTransactionsProvider = StreamProvider.autoDispose<List<Map<String, dynamic>>>((ref) {
+  ref.keepAlive();
   final repo = ref.watch(ledgerRepositoryProvider);
   return repo.getTransactions().map((snapshot) {
     return snapshot.docs.map((doc) => doc.data()).toList();
@@ -38,7 +39,7 @@ class LedgerScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: SafeArea(
                 bottom: false,
@@ -50,7 +51,7 @@ class LedgerScreen extends ConsumerWidget {
                         Icon(LucideIcons.store, color: AppColors.primary, size: 22.sp),
                         SizedBox(width: 8.w),
                         Text(
-                          'THE KINETIC WAREHOUSE',
+                          'Kinetic Warehouse',
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w900,
@@ -60,12 +61,6 @@ class LedgerScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.cloud_off, color: Colors.grey.shade400),
-                      onPressed: () {},
-                      constraints: const BoxConstraints(),
-                      padding: EdgeInsets.zero,
-                    )
                   ],
                 ),
               ),
@@ -248,7 +243,7 @@ class LedgerScreen extends ConsumerWidget {
           color: isActive ? Colors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(8.r),
           boxShadow: isActive
-              ? [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4, offset: const Offset(0, 2))]
+              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 4, offset:const Offset(0, 2))]
               : [],
         ),
         child: Text(
@@ -311,7 +306,7 @@ class LedgerScreen extends ConsumerWidget {
             borderRadius: BorderRadius.circular(24.r),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0B1C30).withOpacity(0.04),
+                color: const Color(0xFF0B1C30).withValues(alpha: 0.04),
                 blurRadius: 24,
                 offset: const Offset(0, -8),
               ),
@@ -352,7 +347,7 @@ class LedgerScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(24.r),
                   border: Border(left: BorderSide(color: AppColors.secondary, width: 4.w)),
                   boxShadow: [
-                    BoxShadow(color: const Color(0xFF0B1C30).withOpacity(0.04), blurRadius: 24, offset: const Offset(0, -8)),
+                    BoxShadow(color: const Color(0xFF0B1C30).withValues(alpha: 0.04), blurRadius: 24, offset: const Offset(0, -8)),
                   ],
                 ),
                 child: Column(
@@ -377,7 +372,7 @@ class LedgerScreen extends ConsumerWidget {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(24.r),
                   boxShadow: [
-                    BoxShadow(color: const Color(0xFF0B1C30).withOpacity(0.04), blurRadius: 24, offset: const Offset(0, -8)),
+                    BoxShadow(color: const Color(0xFF0B1C30).withValues(alpha: 0.04), blurRadius: 24, offset: const Offset(0, -8)),
                   ],
                 ),
                 child: Column(
@@ -448,7 +443,7 @@ class LedgerScreen extends ConsumerWidget {
         final usersAsync = ref.watch(allUsersStreamProvider);
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.95),
+            color: Colors.white.withValues(alpha: 0.95),
             borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
           ),
           padding: EdgeInsets.all(32.r),
@@ -460,7 +455,7 @@ class LedgerScreen extends ConsumerWidget {
                 Row(
                   children: [
                     CircleAvatar(
-                      backgroundColor: AppColors.primary.withOpacity(0.1),
+                      backgroundColor: AppColors.primary.withValues(alpha: 0.1),
                       child: Icon(Icons.people, color: AppColors.primary, size: 24.sp),
                     ),
                     SizedBox(width: 16.w),
@@ -523,11 +518,11 @@ class LedgerScreen extends ConsumerWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95), // Slight glassmorphism
+        color: Colors.white.withValues(alpha: 0.95), // Slight glassmorphism
         borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 40,
             offset: const Offset(0, -10),
           )
@@ -542,7 +537,7 @@ class LedgerScreen extends ConsumerWidget {
             Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: iconColor.withOpacity(0.1),
+                  backgroundColor: iconColor.withValues(alpha: 0.1),
                   child: Icon(icon, color: iconColor, size: 24.sp),
                 ),
                 SizedBox(width: 16.w),
@@ -563,7 +558,7 @@ class LedgerScreen extends ConsumerWidget {
             
             Container(
               padding: EdgeInsets.all(16.r),
-              decoration: BoxDecoration(color: AppColors.surfaceVariant.withOpacity(0.5), borderRadius: BorderRadius.circular(16.r)),
+              decoration: BoxDecoration(color: AppColors.surfaceVariant.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(16.r)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

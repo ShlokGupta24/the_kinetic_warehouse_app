@@ -43,7 +43,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: SafeArea(
                 bottom: false,
@@ -55,7 +55,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         Icon(LucideIcons.store, color: AppColors.primary, size: 22.sp),
                         SizedBox(width: 8.w),
                         Text(
-                          'THE KINETIC WAREHOUSE',
+                          'Kinetic Warehouse',
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w900,
@@ -176,7 +176,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 child: Container(
                   padding: EdgeInsets.all(18.r),
                   decoration: BoxDecoration(
-                    color: AppColors.secondaryContainer.withOpacity(0.3),
+                    color: AppColors.secondaryContainer.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(24.r),
                   ),
                   child: Column(
@@ -204,7 +204,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       Text(
                         'ALL-TIME VOLUME',
                         style: TextStyle(
-                          color: AppColors.secondary.withOpacity(0.7),
+                          color: AppColors.secondary.withValues(alpha: 0.7),
                           fontWeight: FontWeight.bold,
                           fontSize: 9.sp,
                           letterSpacing: 1,
@@ -239,7 +239,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       Text(
                         'TOTAL INVENTORY VALUE',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withValues(alpha: 0.6),
                           fontWeight: FontWeight.w600,
                           fontSize: 11.sp,
                           letterSpacing: 1,
@@ -259,7 +259,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   Container(
                     padding: EdgeInsets.all(8.r),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(12.r),
                     ),
                     child: Icon(Icons.payments_outlined, color: Colors.white, size: 22.sp),
@@ -276,7 +276,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       Text(
                         'TODAY\'S SALES',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withValues(alpha: 0.6),
                           fontWeight: FontWeight.bold,
                           fontSize: 10.sp,
                           letterSpacing: 1.5,
@@ -298,7 +298,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                       Text(
                         'PROFIT',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withValues(alpha: 0.6),
                           fontWeight: FontWeight.bold,
                           fontSize: 10.sp,
                           letterSpacing: 1.5,
@@ -341,7 +341,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             Container(
               padding: EdgeInsets.all(10.r),
               decoration: BoxDecoration(
-                color: const Color(0xFFA43A3A).withOpacity(0.2),
+                color: const Color(0xFFA43A3A).withValues(alpha: 0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.warning_amber_rounded, color: const Color(0xFFA43A3A), size: 22.sp),
@@ -358,12 +358,12 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   SizedBox(height: 4.h),
                   Text(
                     '${stats.lowStockCount} item${stats.lowStockCount == 1 ? '' : 's'} below safety threshold.',
-                    style: TextStyle(color: Colors.white.withOpacity(0.7), fontSize: 12.sp),
+                    style: TextStyle(color: Colors.white.withValues(alpha: 0.7), fontSize: 12.sp),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.chevron_right, color: Colors.white.withOpacity(0.5), size: 22.sp),
+            Icon(Icons.chevron_right, color: Colors.white.withValues(alpha: 0.5), size: 22.sp),
           ],
         ),
       ),

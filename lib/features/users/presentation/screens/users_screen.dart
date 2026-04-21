@@ -23,7 +23,7 @@ class UsersScreen extends ConsumerWidget {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: SafeArea(
                 bottom: false,
@@ -133,7 +133,7 @@ class UsersScreen extends ConsumerWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withOpacity(0.3),
+              color: AppColors.primary.withValues(alpha: 0.3),
               blurRadius: 16,
               offset: const Offset(0, 8),
             ),
@@ -277,7 +277,7 @@ class _UserCard extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16.r),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0B1C30).withOpacity(0.04),
+            color: const Color(0xFF0B1C30).withValues(alpha: 0.04),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -286,7 +286,7 @@ class _UserCard extends ConsumerWidget {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundColor: isAdmin ? AppColors.tertiary.withOpacity(0.1) : AppColors.primaryContainer.withOpacity(0.1),
+            backgroundColor: isAdmin ? AppColors.tertiary.withValues(alpha: 0.1) : AppColors.primaryContainer.withValues(alpha: 0.1),
             radius: 24.r,
             child: Text(
               name.isNotEmpty ? name[0].toUpperCase() : '?',
@@ -325,7 +325,7 @@ class _UserCard extends ConsumerWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: isAdmin ? AppColors.tertiary.withOpacity(0.1) : AppColors.surfaceContainerHigh,
+                  color: isAdmin ? AppColors.tertiary.withValues(alpha: 0.1) : AppColors.surfaceContainerHigh,
                   borderRadius: BorderRadius.circular(9999.r),
                 ),
                 child: Text(

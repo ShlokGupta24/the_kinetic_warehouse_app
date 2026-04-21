@@ -28,7 +28,7 @@ class SharedBottomNavBar extends StatelessWidget {
         borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0B1C30).withOpacity(0.05),
+            color: const Color(0xFF0B1C30).withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, -6),
           ),
@@ -82,7 +82,7 @@ class SharedBottomNavBar extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primaryContainer.withOpacity(0.1)
+              ? AppColors.primaryContainer.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(14.r),
         ),

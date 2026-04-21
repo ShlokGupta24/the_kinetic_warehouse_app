@@ -6,8 +6,10 @@ final searchQueryProvider = StateProvider<String>((ref) => '');
 final categoryFilterProvider = StateProvider<String?>((ref) => null);
 final stockStatusFilterProvider = StateProvider<String?>((ref) => null);
 
-// Base stream containing all products
-final allProductsStreamProvider = StreamProvider<QuerySnapshot<Map<String, dynamic>>>((ref) {
+// Base stream containing all products – keepAlive so it is never disposed
+// when navigating between screens (avoids loading spinner on every re-open)
+final allProductsStreamProvider = StreamProvider.autoDispose<QuerySnapshot<Map<String, dynamic>>>((ref) {
+  ref.keepAlive();
   return FirebaseFirestore.instance.collection('products').snapshots();
 });
 

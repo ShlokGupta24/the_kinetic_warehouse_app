@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyB3IEBH0n0Y_DD9DuTLR9R3_cKkyqISPkA',
+    apiKey: 'AIzaSyAgtqqEvlhQT-sl5tOAJfymKPaseMPbV1M',
     appId: '1:742311130609:android:680f0bb09bef84a4d98050',
     messagingSenderId: '742311130609',
     projectId: 'the-kinetic-warehouse-app',

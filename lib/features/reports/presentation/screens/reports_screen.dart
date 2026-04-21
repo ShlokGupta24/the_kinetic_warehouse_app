@@ -29,7 +29,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
             child: Container(
-              color: Colors.white.withOpacity(0.7),
+              color: Colors.white.withValues(alpha: 0.7),
               padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
               child: SafeArea(
                 bottom: false,
@@ -41,7 +41,7 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         Icon(LucideIcons.store, color: AppColors.primary, size: 22.sp),
                         SizedBox(width: 8.w),
                         Text(
-                          'THE KINETIC WAREHOUSE',
+                          'Kinetic Warehouse',
                           style: TextStyle(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w900,
@@ -51,12 +51,6 @@ class _ReportsScreenState extends ConsumerState<ReportsScreen> {
                         ),
                       ],
                     ),
-                    IconButton(
-                      icon: Icon(Icons.cloud_off, color: Colors.grey.shade400),
-                      onPressed: () {},
-                      constraints: const BoxConstraints(),
-                      padding: EdgeInsets.zero,
-                    )
                   ],
                 ),
               ),
